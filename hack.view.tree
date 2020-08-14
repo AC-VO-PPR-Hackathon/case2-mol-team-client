@@ -1,0 +1,39 @@
+$my_hack $piterjs_app
+	plugins /
+		^
+		<= Enter_speech $mol_speech
+			event_catch?val <=> enter?val null
+			suffix \
+			patterns /
+				\войти
+				\внутрь
+				\enter
+		<= Exit_speech $mol_speech
+			event_catch?val <=> exit?val null
+			suffix \
+			patterns /
+				\выйти
+				\закрыть
+				\exit
+				\escape
+		<= Go_speech $mol_speech
+			event_catch?val <=> go?val null
+			suffix \
+			patterns /
+				\открыть (\S{3,})
+				\перейти (?:на |в )?(\S{3,})
+				\нажать (?:на)?(\S{3,})
+	sub /
+		^
+		<= Speech_hint $mol_text
+			text <= speech_hint \**Голосовые команды:** открыть *[слово]* | закрыть
+		<= Speech_bar $mol_bar
+			sub /
+				<= Speech_toggle $mol_check_icon
+					Icon <= Speech_toggle_icon $mol_icon_microphone
+					checked?val <=> speech_enabled?val false
+					hint <= speech_toggle_hint @ \Speech contol
+				<= Speech_text $mol_view
+					sub /
+						<= speech_text \
+
