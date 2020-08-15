@@ -133,6 +133,20 @@
     return coords[3][1]
   }
 
+  function tan(finger) {
+    dx = topX(finger) - bottomX(finger)
+    dy = topY(finger) - bottomY(finger)
+    return dy / dx
+  }
+
+  function jointCtg(lowerJoint, upperJoint) {
+    dx = lowerJoint[0] - upperJoint[0]
+    dy = lowerJoint[1] > upperJoint[1]
+    return dx / dy
+  }
+
+  // function isJoint(lowerJoint, upperJoint)
+
   var treshold = 4
 
   	function isUp(finger) {
@@ -187,6 +201,29 @@
 		return false
 	}
 
+  function distanceBtwTips(finger1, finger2) {
+    dx = topX(finger1) - topX(finger2)
+    dy = topY(finger1) - topY(finger2)
+    return Math.sqrt(dy**2 + dx**2)
+  }
+
+  function isThumbUp(thumb, finger1, finger2, finger3, finger4) {
+    let x = 0
+    let y = 1
+    let cnt = 0
+    for  (let joint = 0; joint < thumb.length-1; joint++) {
+      lowerJoint = thumb[joint]
+      upperJoint = thumb[joint+1]
+      if (lowerJoint[y] > upperJoint[y] && jointCtg(lowerJoint, upperJoint) <= 0.8) {
+        cnt++
+      }
+    }
+
+    if ((cnt == 3) && tan()) {return true}
+    return false
+
+  }
+
 	const gestures = {
 		forward() { console.log('backward') },
 		backward() { console.log('forward') },
@@ -212,14 +249,16 @@
 			const palm = pred.annotations.palmBase
 			const thumb = pred.annotations.thumb
 			const middle = pred.annotations.middleFinger
+      const pinky = pred.annotations.pinky
+      const ringfinger = pred.annotations.ringFinger
 
 			if (isUp(index) & isUp(middle)) {gestures.search()}
-			else if (isUp(thumb)) {gestures.exit()}
+			else if (isThumbUp(thumb, index, middle, ringfinger, pinky)) {gestures.exit()}
 			else if (isRight(thumb)) {gestures.forward()}
 			else if (isDown(index)) {gestures.enter()}
 			else if (isLeft(index)) {gestures.backward()}
 
-			await sleep(1000)
+			// await sleep(1000)
 		}
 }
 
