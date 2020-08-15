@@ -48,6 +48,27 @@ namespace $.$$ {
 
 		gesture_handle( gestures : any[] ) {
 
+			if (gestures.length == 0) {
+				console.log( 'wait...' )
+				return
+			}
+	
+			for (const pred of gestures) {
+	
+				const index = pred.annotations.indexFinger
+				const palm = pred.annotations.palmBase
+				const thumb = pred.annotations.thumb
+				const middle = pred.annotations.middleFinger
+	
+				if (isUp(index) & isUp(middle)) {console.log("peace")}
+				else if (isUp(thumb)) {console.log("thumb up");this.exit()}
+				else if (isRight(thumb)) {console.log("thumb right");this.forward()}
+				else if (isDown(index)) {console.log("index down");this.enter()}
+				else if (isLeft(index)) {console.log("index left");this.backward()}
+	
+	
+			}
+
 		}
 
 		@ $mol_mem
@@ -99,7 +120,7 @@ namespace $.$$ {
 			console.log( 'back focus to' , link )
 			link?.focus()
 
-			close.dispatchEvent( new MouseEvent( 'click', { bubbles: true } ) )
+			close?.dispatchEvent( new MouseEvent( 'click', { bubbles: true } ) )
 
 			return true
 		}
@@ -130,7 +151,7 @@ namespace $.$$ {
 
 			const links = this.links()
 
-			const index = links.indexOf( document.activeElement! as HTMLElement )
+			const index = links.indexOf( document.activeElement! as any as HTMLElement )
 			const next = links[ index + 1 ] ?? links[0]
 			
 			console.log( next )
@@ -143,7 +164,7 @@ namespace $.$$ {
 
 			const links = this.links()
 
-			const index = links.indexOf( document.activeElement! as HTMLElement )
+			const index = links.indexOf( document.activeElement! as any as HTMLElement )
 			const next = links[ index - 1 ] ?? links[ links.length - 1 ]
 			
 			console.log( next )
@@ -260,5 +281,75 @@ namespace $.$$ {
 	function Y( coords:any ) {
 		return coords[1]
 	} 
+
+	function bottomX( coords:any[] ) {
+		return coords[0][0]
+	}
+	
+		function topX( coords:any[] ) {
+		return coords[3][0]
+	} 
+	
+		function bottomY( coords:any[] ) {
+		return coords[0][1]
+	}
+	
+		function topY( coords:any[] ) {
+		return coords[3][1]
+	}
+	
+	var treshold = 4
+	
+	function isUp(finger:any[]) {
+		const d_x = topX(finger) - bottomX(finger)
+		const d_y = topY(finger) - bottomY(finger)
+		if (d_x != 0) {
+			if (Math.abs(d_y/d_x) > treshold) {
+				if(d_y < 0) {
+					return true
+				}
+			}
+		}
+		return false
+		}
+
+	function isDown(finger:any[]) {
+		const d_x = topX(finger) - bottomX(finger)
+		const d_y = topY(finger) - bottomY(finger)
+		if (d_x != 0) {
+			if (Math.abs(d_y/d_x) > treshold) {
+				if(d_y > 0) {
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	function isRight(finger:any[]) {
+		const d_x = topX(finger) - bottomX(finger)
+		const d_y = topY(finger) - bottomY(finger)
+		if (d_y != 0) {
+				if (Math.abs(d_x/d_y) > treshold) {
+					if (d_x < 0){
+						return true
+				}
+			}
+		}
+		return false
+	}
+
+	function isLeft(finger:any[]) {
+		const d_x = topX(finger) - bottomX(finger)
+		const d_y = topY(finger) - bottomY(finger)
+		if (d_y != 0) {
+				if (Math.abs(d_x/d_y) > treshold) {
+					if (d_x > 0){
+						return true
+				}
+			}
+		}
+		return false
+	}
 
 }
