@@ -32,6 +32,84 @@
 		return videoElement
 	}
 
+		
+	function initCanvas() {
+		const canvasElement = document.getElementById('canvas')
+		const context = canvasElement.getContext('2d')
+		return context
+	}
+
+	function draw_line(ctx, dot_1, dot_2){
+		ctx.strokeStyle = 'blue'
+
+		ctx.beginPath();
+		ctx.moveTo(X(dot_1), Y(dot_1))
+		ctx.lineTo(X(dot_2), Y(dot_2))
+
+		ctx.stroke();
+	}
+
+	function draw_dot(ctx, dot){
+		ctx.fillStyle = "red"
+
+		ctx.beginPath();
+		ctx.arc(X(dot), Y(dot), 3, 0, Math.PI*2, false)
+		ctx.fill()
+	}
+
+	function draw_all_dot(ctx, dots){
+		for (dot of dots){
+			draw_dot(ctx, dot)
+		}
+	}
+
+	function draw(ctx, predictions) {
+		ctx.clearRect(0,0,600,600)
+
+		for (pred of predictions) {
+			const index = pred.annotations.indexFinger
+			const thumb = pred.annotations.thumb
+			const middle = pred.annotations.middleFinger
+			const ringFinger = pred.annotations.ringFinger
+			const pinky = pred.annotations.pinky
+
+			const palm = pred.annotations.palmBase
+
+			draw_all_dot(ctx, palm)
+			draw_line(ctx, palm[0], index[0])
+			draw_line(ctx, palm[0], thumb[0])
+			draw_line(ctx, palm[0], middle[0])
+			draw_line(ctx, palm[0], ringFinger[0])
+			draw_line(ctx, palm[0], pinky[0])
+
+			draw_all_dot(ctx, index)
+			draw_line(ctx, index[0], index[1])
+			draw_line(ctx, index[1], index[2])
+			draw_line(ctx, index[2], index[3])
+
+			draw_all_dot(ctx, thumb)
+			draw_line(ctx, thumb[0], thumb[1])
+			draw_line(ctx, thumb[1], thumb[2])
+			draw_line(ctx, thumb[2], thumb[3])
+
+			draw_all_dot(ctx, middle)
+			draw_line(ctx, middle[0], middle[1])
+			draw_line(ctx, middle[1], middle[2])
+			draw_line(ctx, middle[2], middle[3])
+
+			draw_all_dot(ctx, ringFinger)
+			draw_line(ctx, ringFinger[0], ringFinger[1])
+			draw_line(ctx, ringFinger[1], ringFinger[2])
+			draw_line(ctx, ringFinger[2], ringFinger[3])
+
+			draw_all_dot(ctx, pinky)
+			draw_line(ctx, pinky[0], pinky[1])
+			draw_line(ctx, pinky[1], pinky[2])
+			draw_line(ctx, pinky[2], pinky[3])
+		}
+
+	}
+
 	function bottomX( coords ) {
     return coords[0][0]
   }
@@ -130,11 +208,13 @@
 
 		const videoElement = await initVideo()
 		const model = await handpose.load()
+		const context = initCanvas()
 
 		while (true) {
 			await new Promise(requestAnimationFrame)
 			const predictions = await model.estimateHands(videoElement)
 			await handleGesures(predictions)
+			draw(context,predictions)
 		}
 
 	}
