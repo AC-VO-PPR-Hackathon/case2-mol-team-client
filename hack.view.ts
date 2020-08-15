@@ -151,7 +151,7 @@ namespace $.$$ {
 
 			const links = this.links()
 
-			const index = links.indexOf( document.activeElement! as any as HTMLElement )
+			const index = links.indexOf( document.activeElement! as HTMLAnchorElement )
 			const next = links[ index + 1 ] ?? links[0]
 			
 			console.log( next )
@@ -164,7 +164,7 @@ namespace $.$$ {
 
 			const links = this.links()
 
-			const index = links.indexOf( document.activeElement! as any as HTMLElement )
+			const index = links.indexOf( document.activeElement! as HTMLAnchorElement )
 			const next = links[ index - 1 ] ?? links[ links.length - 1 ]
 			
 			console.log( next )
