@@ -40,7 +40,7 @@ $my_hack $piterjs_app
 				<= Speech_panel $mol_list
 					rows /
 						<= Speech_hint $mol_text
-							text <= speech_hint \ **следующий** | **предыдущий** | **выбрать** | **убрать** | **открыть** *солово*
+							text <= speech_hint \ **следующий** | **предыдущий** | **выбрать** | **убрать** | **открыть** *слово*
 							
 						<= Speech_bar $mol_view
 							sub /
