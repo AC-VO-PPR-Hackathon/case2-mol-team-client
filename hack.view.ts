@@ -7,6 +7,77 @@ namespace $.$$ {
 			$mol_speech.hearing( true )
 		}
 
+		@ $mol_mem
+		camera() {
+
+			const getUserMedia = $mol_fiber_sync( ()=> navigator.mediaDevices.getUserMedia({
+				audio: false,
+				video: {
+					height: 600,
+					width: 600,
+					facingMode: "user",
+				}
+			}) )
+
+			return getUserMedia()
+		}
+
+		camera_ready() {
+
+			const video = this.Camera().dom_node() as HTMLVideoElement
+			video.play()
+			
+			const get_model = $mol_fiber_sync( ()=> window['handpose'].load() )
+			const model = get_model()
+	
+			let tick = async ()=> {
+				const gestures = await model['estimateHands'](video)
+				this.gestures(gestures)
+				this.gesture_handle(gestures)
+				if( tick ) requestAnimationFrame( tick )
+			}
+
+			requestAnimationFrame( tick )
+
+		}
+
+		@ $mol_mem
+		gestures( next = [] as any[] ) {
+			return next
+		}
+
+		gesture_handle( gestures : any[] ) {
+
+		}
+
+		@ $mol_mem
+		skeleton_draw() {
+
+			const canvas = this.Skeleton().dom_node() as HTMLCanvasElement
+			canvas.width = 600
+			canvas.height = 600
+			
+			const gestures = this.gestures()
+			
+			const ctx = canvas.getContext('2d')!
+			ctx.clearRect(0,0,600,600)
+			ctx.strokeStyle = 'blue'
+			ctx.beginPath();
+			ctx.moveTo(0,0);
+			ctx.lineTo(600,600);
+			ctx.moveTo(0,600);
+			ctx.lineTo(600,0);
+			ctx.stroke();
+
+			return null
+
+		}
+
+		render() {
+			super.render()
+			this.skeleton_draw()
+		}
+
 		speech_text() {
 			const commands = $mol_speech.commands()
 			return commands[ commands.length - 1 ] || ''

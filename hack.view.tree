@@ -36,17 +36,29 @@ $my_hack $piterjs_app
 			patterns /
 				\выбрать
 	sub /
-		^
-		<= Speech_hint $mol_text
-			text <= speech_hint \**открыть** *[слово]* | **закрыть** | **назад** | **верёд** | **выбрать**
-			
-		<= Speech_bar $mol_bar
+		<= Control $mol_view
 			sub /
-				<= Speech_toggle $mol_check_icon
-					Icon <= Speech_toggle_icon $mol_icon_microphone
-					checked?val <=> speech_enabled?val false
-					hint <= speech_toggle_hint @ \Speech contol
-				<= Speech_text $mol_view
+				<= Mirror $mol_view
 					sub /
-						<= speech_text \
+						<= Camera $mol_view
+							dom_name \video
+							field * srcObject <= camera null
+							event * loadedmetadata?event <=> camera_ready?event null
+						<= Skeleton $mol_view
+							dom_name \canvas
+				<= Speech_panel $mol_list
+					rows /
+						<= Speech_hint $mol_text
+							text <= speech_hint \**открыть** *[слово]* | **закрыть** | **назад** | **верёд** | **выбрать**
+							
+						<= Speech_bar $mol_view
+							sub /
+								<= Speech_toggle $mol_check_icon
+									Icon <= Speech_toggle_icon $mol_icon_microphone
+									checked?val <=> speech_enabled?val false
+									hint <= speech_toggle_hint @ \Speech contol
+								<= Speech_text $mol_view
+									sub /
+										<= speech_text \
+		^
 
