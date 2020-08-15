@@ -87,16 +87,18 @@ namespace $.$$ {
 			return $mol_speech.hearing( next )
 		}
 
-		enter() {
-			const focused = $mol_view_selection.focused()[0] as HTMLElement
-			focused.dispatchEvent( new MouseEvent( 'click', { bubbles: true } ) )
-			return true
-		}
-
 		exit() {
 			const query = '[mol_page_head] [mol_icon_cross]'
 			const close = [ ... document.querySelectorAll( query ) ].slice(-1)[0] as HTMLElement
+
+			const links = this.links()
+			const uri = document.location.href
+			const link = links.find( link => link.href === uri )
+			console.log( 'back focus to' , link )
+			link?.focus()
+
 			close.dispatchEvent( new MouseEvent( 'click', { bubbles: true } ) )
+
 			return true
 		}
 
@@ -104,8 +106,7 @@ namespace $.$$ {
 
 			topic = topic.replace( /(а|о|у|е|и|ь|)$/ , '' )
 
-			const query = 'a, button'
-			const links = [ ... document.querySelectorAll( query ) ] as HTMLElement[]
+			const links = this.links()
 			
 			console.log(JSON.stringify(topic) )
 			for( const link of links ) {
@@ -116,6 +117,8 @@ namespace $.$$ {
 				console.log( link )
 				link.dispatchEvent( new MouseEvent( 'click', { bubbles: true } ) )
 
+				this.autofocus()
+
 				return true
 			}
 
@@ -123,8 +126,7 @@ namespace $.$$ {
 		
 		forward() {
 
-			const query = 'a, button'
-			const links = [ ... document.querySelectorAll( query ) ] as HTMLElement[]
+			const links = this.links()
 
 			const index = links.indexOf( document.activeElement as HTMLElement )
 			const next = links[ index + 1 ] ?? links[0]
@@ -137,8 +139,7 @@ namespace $.$$ {
 		
 		backward() {
 
-			const query = 'a, button'
-			const links = [ ... document.querySelectorAll( query ) ] as HTMLElement[]
+			const links = this.links()
 
 			const index = links.indexOf( document.activeElement as HTMLElement )
 			const next = links[ index - 1 ] ?? links[ links.length - 1 ]
@@ -149,11 +150,27 @@ namespace $.$$ {
 			return true
 		}
 		
-		select() {
+		enter() {
 
 			document.activeElement?.dispatchEvent( new MouseEvent( 'click', { bubbles: true } ) )
+			this.autofocus()
 
 			return true
+		}
+
+		links() {
+			const query = 'a'
+			const links = [ ... document.querySelectorAll( query ) ] as HTMLAnchorElement[]
+			return links
+		}
+
+		autofocus() {
+			const prev = this.links()
+			requestAnimationFrame(()=> requestAnimationFrame(()=> {
+				const next = this.links()
+				const news = next.filter( link => !prev.includes(link))
+				news[0]?.focus()
+			}))
 		}
 		
 	}

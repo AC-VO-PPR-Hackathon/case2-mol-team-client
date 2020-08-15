@@ -5,36 +5,27 @@ $my_hack $piterjs_app
 			event_catch?val <=> enter?val null
 			suffix \
 			patterns /
-				\войти
-				\внутрь
+				\выбрать
 		<= Exit_speech $mol_speech
 			event_catch?val <=> exit?val null
 			suffix \
 			patterns /
-				\выйти
-				\закрыть
+				\убрать
 		<= Go_speech $mol_speech
 			event_catch?val <=> go?val null
 			suffix \
 			patterns /
-				\перейти (?:на |в )?(\S{2,})
-				\нажать (?:на)?(\S{2,})
 				\открыть (\S{2,})
 		<= Backward $mol_speech
 			event_catch?val <=> backward?val null
 			suffix \
 			patterns /
-				\назад
+				\предыдущий
 		<= Forward $mol_speech
 			event_catch?val <=> forward?val null
 			suffix \
 			patterns /
-				\вперед
-		<= Select $mol_speech
-			event_catch?val <=> select?val null
-			suffix \
-			patterns /
-				\выбрать
+				\следующий
 	sub /
 		<= Control $mol_view
 			sub /
@@ -49,7 +40,7 @@ $my_hack $piterjs_app
 				<= Speech_panel $mol_list
 					rows /
 						<= Speech_hint $mol_text
-							text <= speech_hint \**открыть** *[слово]* | **закрыть** | **назад** | **верёд** | **выбрать**
+							text <= speech_hint \ **следующий** | **предыдущий** | **выбрать** | **убрать** | **открыть** *солово*
 							
 						<= Speech_bar $mol_view
 							sub /
