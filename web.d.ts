@@ -4120,14 +4120,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $mol_bar extends $mol_view {
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
     class $mol_check_icon extends $mol_check {
     }
 }
@@ -4157,9 +4149,16 @@ declare namespace $ {
         Select(): $mol_speech;
         select(val?: any, force?: $mol_mem_force): any;
         sub(): readonly any[];
+        Control(): $mol_view;
+        Mirror(): $mol_view;
+        Camera(): $mol_view;
+        camera(): any;
+        camera_ready(event?: any, force?: $mol_mem_force): any;
+        Skeleton(): $mol_view;
+        Speech_panel(): $$.$mol_list;
         Speech_hint(): $$.$mol_text;
         speech_hint(): string;
-        Speech_bar(): $mol_bar;
+        Speech_bar(): $mol_view;
         Speech_toggle(): $mol_check_icon;
         Speech_toggle_icon(): $mol_icon_microphone;
         speech_enabled(val?: any, force?: $mol_mem_force): any;
@@ -4175,6 +4174,12 @@ declare namespace $ {
 declare namespace $.$$ {
     class $my_hack extends $.$my_hack {
         constructor();
+        camera(): MediaStream;
+        camera_ready(): void;
+        gestures(next?: any[]): any[];
+        gesture_handle(gestures: any[]): void;
+        skeleton_draw(): null;
+        render(): void;
         speech_text(): string;
         speech_enabled(next?: boolean): boolean;
         enter(): boolean;

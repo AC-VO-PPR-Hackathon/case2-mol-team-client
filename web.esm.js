@@ -11279,22 +11279,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_bar extends $.$mol_view {
-    }
-    $.$mol_bar = $mol_bar;
-})($ || ($ = {}));
-//bar.view.tree.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_style_attach("mol/bar/bar.view.css", "[mol_bar] {\n\tdisplay: flex;\n\tbox-shadow: inset 0 0 0 .5px var(--mol_theme_line);\n\tborder-radius: var(--mol_skin_round);\n}\n\n[mol_bar] > * {\n\tborder-radius: 0;\n}\n\n[mol_bar] > *:first-child {\n\tborder-top-left-radius: var(--mol_skin_round);\n\tborder-bottom-left-radius: var(--mol_skin_round);\n}\n\n[mol_bar] > *:not(:first-child) {\n\tmargin-left: 1px;\n}\n\n[mol_bar] > *:last-child {\n\tborder-top-right-radius: var(--mol_skin_round);\n\tborder-bottom-right-radius: var(--mol_skin_round);\n}\n");
-})($ || ($ = {}));
-//bar.view.css.js.map
-;
-"use strict";
-var $;
-(function ($) {
     class $mol_check_icon extends $.$mol_check {
     }
     $.$mol_check_icon = $mol_check_icon;
@@ -11394,7 +11378,49 @@ var $;
             return (val !== void 0) ? val : null;
         }
         sub() {
-            return [...super.sub(), this.Speech_hint(), this.Speech_bar()];
+            return [this.Control(), ...super.sub()];
+        }
+        Control() {
+            return ((obj) => {
+                obj.sub = () => [this.Mirror(), this.Speech_panel()];
+                return obj;
+            })(new this.$.$mol_view());
+        }
+        Mirror() {
+            return ((obj) => {
+                obj.sub = () => [this.Camera(), this.Skeleton()];
+                return obj;
+            })(new this.$.$mol_view());
+        }
+        Camera() {
+            return ((obj) => {
+                obj.dom_name = () => "video";
+                obj.field = () => ({
+                    "srcObject": this.camera(),
+                });
+                obj.event = () => ({
+                    "loadedmetadata": (event) => this.camera_ready(event),
+                });
+                return obj;
+            })(new this.$.$mol_view());
+        }
+        camera() {
+            return null;
+        }
+        camera_ready(event, force) {
+            return (event !== void 0) ? event : null;
+        }
+        Skeleton() {
+            return ((obj) => {
+                obj.dom_name = () => "canvas";
+                return obj;
+            })(new this.$.$mol_view());
+        }
+        Speech_panel() {
+            return ((obj) => {
+                obj.rows = () => [this.Speech_hint(), this.Speech_bar()];
+                return obj;
+            })(new this.$.$mol_list());
         }
         Speech_hint() {
             return ((obj) => {
@@ -11409,7 +11435,7 @@ var $;
             return ((obj) => {
                 obj.sub = () => [this.Speech_toggle(), this.Speech_text()];
                 return obj;
-            })(new this.$.$mol_bar());
+            })(new this.$.$mol_view());
         }
         Speech_toggle() {
             return ((obj) => {
@@ -11478,6 +11504,24 @@ var $;
     ], $my_hack.prototype, "select", null);
     __decorate([
         $.$mol_mem
+    ], $my_hack.prototype, "Control", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Mirror", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Camera", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "camera_ready", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Skeleton", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Speech_panel", null);
+    __decorate([
+        $.$mol_mem
     ], $my_hack.prototype, "Speech_hint", null);
     __decorate([
         $.$mol_mem
@@ -11501,14 +11545,40 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    const { rem } = $.$mol_style_unit;
+    const { rem, px, per } = $.$mol_style_unit;
     $.$mol_style_define($.$my_hack, {
         Speech_bar: {
             padding: rem(.75),
+            display: 'flex',
         },
         Speech_text: {
             flex: 'none',
             padding: [rem(.5), 0],
+        },
+        Mirror: {
+            width: px(600),
+            height: px(600),
+            position: 'relative',
+            zoom: '.5',
+            transform: 'scaleX(-1)',
+        },
+        Camera: {
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            top: '0',
+            bottom: '0',
+            width: per(100),
+            height: per(100),
+        },
+        Skeleton: {
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            top: '0',
+            bottom: '0',
+            width: per(100),
+            height: per(100),
         },
     });
 })($ || ($ = {}));
@@ -11523,6 +11593,56 @@ var $;
             constructor() {
                 super();
                 $.$mol_speech.hearing(true);
+            }
+            camera() {
+                const getUserMedia = $.$mol_fiber_sync(() => navigator.mediaDevices.getUserMedia({
+                    audio: false,
+                    video: {
+                        height: 600,
+                        width: 600,
+                        facingMode: "user",
+                    }
+                }));
+                return getUserMedia();
+            }
+            camera_ready() {
+                const video = this.Camera().dom_node();
+                video.play();
+                const get_model = $.$mol_fiber_sync(() => window['handpose'].load());
+                const model = get_model();
+                let tick = async () => {
+                    const gestures = await model['estimateHands'](video);
+                    this.gestures(gestures);
+                    this.gesture_handle(gestures);
+                    if (tick)
+                        requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+            }
+            gestures(next = []) {
+                return next;
+            }
+            gesture_handle(gestures) {
+            }
+            skeleton_draw() {
+                const canvas = this.Skeleton().dom_node();
+                canvas.width = 600;
+                canvas.height = 600;
+                const gestures = this.gestures();
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, 600, 600);
+                ctx.strokeStyle = 'blue';
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(600, 600);
+                ctx.moveTo(0, 600);
+                ctx.lineTo(600, 0);
+                ctx.stroke();
+                return null;
+            }
+            render() {
+                super.render();
+                this.skeleton_draw();
             }
             speech_text() {
                 const commands = $.$mol_speech.commands();
@@ -11583,6 +11703,15 @@ var $;
                 return true;
             }
         }
+        __decorate([
+            $.$mol_mem
+        ], $my_hack.prototype, "camera", null);
+        __decorate([
+            $.$mol_mem
+        ], $my_hack.prototype, "gestures", null);
+        __decorate([
+            $.$mol_mem
+        ], $my_hack.prototype, "skeleton_draw", null);
         $$.$my_hack = $my_hack;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
