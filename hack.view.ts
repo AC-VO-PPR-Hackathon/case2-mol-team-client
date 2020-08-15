@@ -60,7 +60,7 @@ namespace $.$$ {
 				const thumb = pred.annotations.thumb
 				const middle = pred.annotations.middleFinger
 	
-				if (isUp(index) & isUp(middle)) {console.log("peace")}
+				if (isUp(index) && isUp(middle)) {console.log("peace")}
 				else if (isUp(thumb)) {console.log("thumb up");this.exit()}
 				else if (isRight(thumb)) {console.log("thumb right");this.forward()}
 				else if (isDown(index)) {console.log("index down");this.enter()}
