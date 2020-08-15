@@ -4111,7 +4111,7 @@ declare namespace $ {
         static text(): string;
         commands_skip(next?: number): number;
         render(): null;
-        event_catch(found?: string[]): void;
+        event_catch(found?: string[]): boolean;
         patterns(): readonly string[];
         matchers(): RegExp[];
         prefix(): string;
@@ -4150,6 +4150,12 @@ declare namespace $ {
         exit(val?: any, force?: $mol_mem_force): any;
         Go_speech(): $mol_speech;
         go(val?: any, force?: $mol_mem_force): any;
+        Backward(): $mol_speech;
+        backward(val?: any, force?: $mol_mem_force): any;
+        Forward(): $mol_speech;
+        forward(val?: any, force?: $mol_mem_force): any;
+        Select(): $mol_speech;
+        select(val?: any, force?: $mol_mem_force): any;
         sub(): readonly any[];
         Speech_hint(): $$.$mol_text;
         speech_hint(): string;
@@ -4171,9 +4177,12 @@ declare namespace $.$$ {
         constructor();
         speech_text(): string;
         speech_enabled(next?: boolean): boolean;
-        enter(): void;
-        exit(): void;
-        go([topic]: [string]): void;
+        enter(): boolean;
+        exit(): boolean;
+        go([topic]: [string]): true | undefined;
+        forward(): boolean;
+        backward(): boolean;
+        select(): boolean;
     }
 }
 

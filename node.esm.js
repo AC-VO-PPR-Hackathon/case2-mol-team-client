@@ -11253,8 +11253,9 @@ var $;
                     if (!found)
                         continue;
                     new $.$mol_defer(() => {
-                        this.commands_skip(i + 1);
-                        this.event_catch(found.slice(1));
+                        if (this.event_catch(found.slice(1))) {
+                            this.commands_skip(i + 1);
+                        }
                     });
                     return null;
                 }
@@ -11263,6 +11264,7 @@ var $;
         }
         event_catch(found) {
             console.log(found);
+            return false;
         }
         patterns() {
             return [];
@@ -11371,13 +11373,13 @@ var $;
 (function ($) {
     class $my_hack extends $.$piterjs_app {
         plugins() {
-            return [...super.plugins(), this.Enter_speech(), this.Exit_speech(), this.Go_speech()];
+            return [...super.plugins(), this.Enter_speech(), this.Exit_speech(), this.Go_speech(), this.Backward(), this.Forward(), this.Select()];
         }
         Enter_speech() {
             return ((obj) => {
                 obj.event_catch = (val) => this.enter(val);
                 obj.suffix = () => "";
-                obj.patterns = () => ["войти", "внутрь", "enter"];
+                obj.patterns = () => ["войти", "внутрь"];
                 return obj;
             })(new this.$.$mol_speech());
         }
@@ -11388,7 +11390,7 @@ var $;
             return ((obj) => {
                 obj.event_catch = (val) => this.exit(val);
                 obj.suffix = () => "";
-                obj.patterns = () => ["выйти", "закрыть", "exit", "escape"];
+                obj.patterns = () => ["выйти", "закрыть"];
                 return obj;
             })(new this.$.$mol_speech());
         }
@@ -11399,11 +11401,44 @@ var $;
             return ((obj) => {
                 obj.event_catch = (val) => this.go(val);
                 obj.suffix = () => "";
-                obj.patterns = () => ["открыть (\\S{3,})", "перейти (?:на |в )?(\\S{3,})", "нажать (?:на)?(\\S{3,})"];
+                obj.patterns = () => ["перейти (?:на |в )?(\\S{2,})", "нажать (?:на)?(\\S{2,})", "открыть (\\S{2,})"];
                 return obj;
             })(new this.$.$mol_speech());
         }
         go(val, force) {
+            return (val !== void 0) ? val : null;
+        }
+        Backward() {
+            return ((obj) => {
+                obj.event_catch = (val) => this.backward(val);
+                obj.suffix = () => "";
+                obj.patterns = () => ["назад"];
+                return obj;
+            })(new this.$.$mol_speech());
+        }
+        backward(val, force) {
+            return (val !== void 0) ? val : null;
+        }
+        Forward() {
+            return ((obj) => {
+                obj.event_catch = (val) => this.forward(val);
+                obj.suffix = () => "";
+                obj.patterns = () => ["вперед"];
+                return obj;
+            })(new this.$.$mol_speech());
+        }
+        forward(val, force) {
+            return (val !== void 0) ? val : null;
+        }
+        Select() {
+            return ((obj) => {
+                obj.event_catch = (val) => this.select(val);
+                obj.suffix = () => "";
+                obj.patterns = () => ["выбрать"];
+                return obj;
+            })(new this.$.$mol_speech());
+        }
+        select(val, force) {
             return (val !== void 0) ? val : null;
         }
         sub() {
@@ -11416,7 +11451,7 @@ var $;
             })(new this.$.$mol_text());
         }
         speech_hint() {
-            return "**Голосовые команды:** открыть *[слово]* | закрыть";
+            return "**открыть** *[слово]* | **закрыть** | **назад** | **верёд** | **выбрать**";
         }
         Speech_bar() {
             return ((obj) => {
@@ -11471,6 +11506,24 @@ var $;
     __decorate([
         $.$mol_mem
     ], $my_hack.prototype, "go", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Backward", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "backward", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Forward", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "forward", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Select", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "select", null);
     __decorate([
         $.$mol_mem
     ], $my_hack.prototype, "Speech_hint", null);
@@ -11529,14 +11582,17 @@ var $;
             enter() {
                 const focused = $.$mol_view_selection.focused()[0];
                 focused.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                return true;
             }
             exit() {
                 const query = '[mol_page_head] [mol_icon_cross]';
                 const close = [...document.querySelectorAll(query)].slice(-1)[0];
                 close.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                return true;
             }
             go([topic]) {
                 var _a, _b;
+                topic = topic.replace(/(а|о|у|е|и|ь|)$/, '');
                 const query = 'a, button';
                 const links = [...document.querySelectorAll(query)];
                 console.log(JSON.stringify(topic));
@@ -11546,7 +11602,33 @@ var $;
                         continue;
                     console.log(link);
                     link.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                    return true;
                 }
+            }
+            forward() {
+                var _a;
+                const query = 'a, button';
+                const links = [...document.querySelectorAll(query)];
+                const index = links.indexOf(document.activeElement);
+                const next = (_a = links[index + 1]) !== null && _a !== void 0 ? _a : links[0];
+                console.log(next);
+                next.focus();
+                return true;
+            }
+            backward() {
+                var _a;
+                const query = 'a, button';
+                const links = [...document.querySelectorAll(query)];
+                const index = links.indexOf(document.activeElement);
+                const next = (_a = links[index - 1]) !== null && _a !== void 0 ? _a : links[links.length - 1];
+                console.log(next);
+                next.focus();
+                return true;
+            }
+            select() {
+                var _a;
+                (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                return true;
             }
         }
         $$.$my_hack = $my_hack;
