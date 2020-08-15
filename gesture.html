@@ -188,6 +188,14 @@
 		return false
 	}
 
+	const gestures = {
+		forward() { console.log('backward') },
+		backward() { console.log('forward') },
+		enter() { console.log('enter') },
+		exit() { console.log('exit') },
+		search() { console.log('search') },
+}
+
 	async function handleGesures(predictions) {
 
 		if (predictions.length == 0) {
@@ -202,11 +210,11 @@
 			const thumb = pred.annotations.thumb
 			const middle = pred.annotations.middleFinger
 
-			if (isUp(index) & isUp(middle)) {console.log("peace")}
-			else if (isUp(thumb)) {console.log("thumb up")}
-			else if (isRight(thumb)) {console.log("thumb right")}
-			else if (isDown(index)) {console.log("index down")}
-			else if (isLeft(index)) {console.log("index left")}
+			if (isUp(index) & isUp(middle)) {gestures.search()}
+			else if (isUp(thumb)) {gestures.exit()}
+			else if (isRight(thumb)) {gestures.forward()}
+			else if (isDown(index)) {gestures.enter()}
+			else if (isLeft(index)) {gestures.backward()}
 
 
 		}
