@@ -11738,7 +11738,7 @@ var $;
         ], $my_hack.prototype, "skeleton_draw", null);
         $$.$my_hack = $my_hack;
         function draw_line(ctx, dot_1, dot_2) {
-            ctx.strokeStyle = 'blue';
+            ctx.strokeStyle = 'green';
             ctx.beginPath();
             ctx.moveTo(X(dot_1), Y(dot_1));
             ctx.lineTo(X(dot_2), Y(dot_2));
