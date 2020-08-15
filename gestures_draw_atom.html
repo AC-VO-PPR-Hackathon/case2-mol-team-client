@@ -1,0 +1,161 @@
+<script src="https://unpkg.com/@tensorflow/tfjs-core/dist/tf-core.js"></script>
+<script src="https://unpkg.com/@tensorflow/tfjs-converter/dist/tf-converter.js"></script>
+
+<script src="https://unpkg.com/@tensorflow/tfjs-backend-cpu/dist/tf-backend-cpu.js"></script>
+<script src="https://unpkg.com/@tensorflow/tfjs-backend-webgl/dist/tf-backend-webgl.js"></script>
+
+<script src="https://unpkg.com/@tensorflow-models/handpose/dist/handpose.js"></script>
+
+<video id="video" style="width: 600px; height: 600px; transform: scaleX(-1); position: absolute"></video>
+<canvas id="canvas" width="600" height="600" style="transform: scaleX(-1); position: absolute"></canvas>
+
+<script>
+
+	function initCanvas() {
+		const canvasElement = document.getElementById('canvas')
+		const context = canvasElement.getContext('2d')
+		return context
+	}
+
+	function draw_line(ctx, dot_1, dot_2){
+		ctx.strokeStyle = 'blue'
+
+		ctx.beginPath();
+		ctx.moveTo(X(dot_1), Y(dot_1))
+		ctx.lineTo(X(dot_2), Y(dot_2))
+
+		ctx.stroke();
+	}
+
+	function draw_dot(ctx, dot){
+		ctx.fillStyle = "red"
+
+		ctx.beginPath();
+		ctx.arc(X(dot), Y(dot), 3, 0, Math.PI*2, false)
+		ctx.fill()
+	}
+
+	function draw_all_dot(ctx, dots){
+		for (dot of dots){
+			draw_dot(ctx, dot)
+		}
+	}
+
+	function draw(ctx, predictions) {
+		ctx.clearRect(0,0,600,600)
+
+		for (pred of predictions) {
+			const index = pred.annotations.indexFinger
+			const thumb = pred.annotations.thumb
+			const middle = pred.annotations.middleFinger
+			const ringFinger = pred.annotations.ringFinger
+			const pinky = pred.annotations.pinky
+
+			const palm = pred.annotations.palmBase
+
+			draw_all_dot(ctx, palm)
+			draw_line(ctx, palm[0], index[0])
+			draw_line(ctx, palm[0], thumb[0])
+			draw_line(ctx, palm[0], middle[0])
+			draw_line(ctx, palm[0], ringFinger[0])
+			draw_line(ctx, palm[0], pinky[0])
+
+			draw_all_dot(ctx, index)
+			draw_line(ctx, index[0], index[1])
+			draw_line(ctx, index[1], index[2])
+			draw_line(ctx, index[2], index[3])
+
+			draw_all_dot(ctx, thumb)
+			draw_line(ctx, thumb[0], thumb[1])
+			draw_line(ctx, thumb[1], thumb[2])
+			draw_line(ctx, thumb[2], thumb[3])
+
+			draw_all_dot(ctx, middle)
+			draw_line(ctx, middle[0], middle[1])
+			draw_line(ctx, middle[1], middle[2])
+			draw_line(ctx, middle[2], middle[3])
+
+			draw_all_dot(ctx, ringFinger)
+			draw_line(ctx, ringFinger[0], ringFinger[1])
+			draw_line(ctx, ringFinger[1], ringFinger[2])
+			draw_line(ctx, ringFinger[2], ringFinger[3])
+
+			draw_all_dot(ctx, pinky)
+			draw_line(ctx, pinky[0], pinky[1])
+			draw_line(ctx, pinky[1], pinky[2])
+			draw_line(ctx, pinky[2], pinky[3])
+		}
+
+	}
+
+	async function initVideo() {
+
+		const mediaStream = await navigator.mediaDevices.getUserMedia({
+			audio: false,
+			video: {
+				height: 600,
+				width: 600,
+				facingMode: "user",
+			}
+		})
+
+		const videoElement = document.getElementById('video')
+		videoElement.srcObject = mediaStream
+		
+		await new Promise(done => videoElement.onloadedmetadata = done)
+		
+		videoElement.play()
+
+		return videoElement
+	}
+
+	function X( coords ) {
+		return coords[0]
+	} 
+
+	function Y( coords ) {
+		return coords[1]
+	} 
+
+	async function handleGesures(predictions) {
+
+		if (predictions.length == 0) {
+			console.log( 'wait...' )
+			return
+		}
+
+		console.info(predictions)
+		for (pred of predictions) {
+
+			const index = pred.annotations.indexFinger
+			const palm = pred.annotations.palmBase
+			const thumb = pred.annotations.thumb
+
+			if (X(index[0]) > X(palm[0]) && Y(thumb[0]) < Y(palm[0])) {
+				console.log('left')
+			}
+
+			if (X(index[0]) < X(palm[0]) && Y(thumb[0]) < Y(palm[0])) {
+				console.log('right')
+			}
+		}
+
+	}
+
+	async function main() {
+
+		const videoElement = await initVideo()
+		const context = initCanvas()
+		const model = await handpose.load()
+
+		while (true) {
+			await new Promise(requestAnimationFrame)
+			const predictions = await model.estimateHands(videoElement)
+			await handleGesures(predictions)
+			draw(context,predictions)
+		}
+
+	}
+	main()
+
+</script>

@@ -109,7 +109,6 @@
 			return
 		}
 
-		console.info(predictions)
 		for (pred of predictions) {
 
 			const index = pred.annotations.indexFinger
@@ -117,12 +116,12 @@
 			const thumb = pred.annotations.thumb
 			const middle = pred.annotations.middleFinger
 
-			if (isUp(index) & isUp(middle)) {console.log("peace bro")}
+			if (isUp(index) & isUp(middle)) {console.log("peace")}
 			else if (isUp(thumb)) {console.log("thumb up")}
-			else if (isLeft(thumb)) {console.log("thumb left")}
 			else if (isRight(thumb)) {console.log("thumb right")}
 			else if (isDown(index)) {console.log("index down")}
 			else if (isLeft(index)) {console.log("index left")}
+
 
 		}
 	}
