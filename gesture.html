@@ -195,6 +195,10 @@
 		search() { console.log('search') },
 }
 
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
 	async function handleGesures(predictions) {
 
 		if (predictions.length == 0) {
@@ -214,6 +218,8 @@
 			else if (isRight(thumb)) {gestures.forward()}
 			else if (isDown(index)) {gestures.enter()}
 			else if (isLeft(index)) {gestures.backward()}
+
+			await sleep(1000)
 		}
 }
 
