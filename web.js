@@ -11309,13 +11309,13 @@ var $;
 (function ($) {
     class $my_hack extends $.$piterjs_app {
         plugins() {
-            return [...super.plugins(), this.Enter_speech(), this.Exit_speech(), this.Go_speech(), this.Backward(), this.Forward(), this.Select()];
+            return [...super.plugins(), this.Enter_speech(), this.Exit_speech(), this.Go_speech(), this.Backward(), this.Forward()];
         }
         Enter_speech() {
             return ((obj) => {
                 obj.event_catch = (val) => this.enter(val);
                 obj.suffix = () => "";
-                obj.patterns = () => ["войти", "внутрь"];
+                obj.patterns = () => ["выбрать"];
                 return obj;
             })(new this.$.$mol_speech());
         }
@@ -11326,7 +11326,7 @@ var $;
             return ((obj) => {
                 obj.event_catch = (val) => this.exit(val);
                 obj.suffix = () => "";
-                obj.patterns = () => ["выйти", "закрыть"];
+                obj.patterns = () => ["убрать"];
                 return obj;
             })(new this.$.$mol_speech());
         }
@@ -11337,7 +11337,7 @@ var $;
             return ((obj) => {
                 obj.event_catch = (val) => this.go(val);
                 obj.suffix = () => "";
-                obj.patterns = () => ["перейти (?:на |в )?(\\S{2,})", "нажать (?:на)?(\\S{2,})", "открыть (\\S{2,})"];
+                obj.patterns = () => ["открыть (\\S{2,})"];
                 return obj;
             })(new this.$.$mol_speech());
         }
@@ -11348,7 +11348,7 @@ var $;
             return ((obj) => {
                 obj.event_catch = (val) => this.backward(val);
                 obj.suffix = () => "";
-                obj.patterns = () => ["назад"];
+                obj.patterns = () => ["предыдущий"];
                 return obj;
             })(new this.$.$mol_speech());
         }
@@ -11359,22 +11359,11 @@ var $;
             return ((obj) => {
                 obj.event_catch = (val) => this.forward(val);
                 obj.suffix = () => "";
-                obj.patterns = () => ["вперед"];
+                obj.patterns = () => ["следующий"];
                 return obj;
             })(new this.$.$mol_speech());
         }
         forward(val, force) {
-            return (val !== void 0) ? val : null;
-        }
-        Select() {
-            return ((obj) => {
-                obj.event_catch = (val) => this.select(val);
-                obj.suffix = () => "";
-                obj.patterns = () => ["выбрать"];
-                return obj;
-            })(new this.$.$mol_speech());
-        }
-        select(val, force) {
             return (val !== void 0) ? val : null;
         }
         sub() {
@@ -11429,7 +11418,7 @@ var $;
             })(new this.$.$mol_text());
         }
         speech_hint() {
-            return "**открыть** *[слово]* | **закрыть** | **назад** | **верёд** | **выбрать**";
+            return " **следующий** | **предыдущий** | **выбрать** | **убрать** | **открыть** *слово*";
         }
         Speech_bar() {
             return ((obj) => {
@@ -11496,12 +11485,6 @@ var $;
     __decorate([
         $.$mol_mem
     ], $my_hack.prototype, "forward", null);
-    __decorate([
-        $.$mol_mem
-    ], $my_hack.prototype, "Select", null);
-    __decorate([
-        $.$mol_mem
-    ], $my_hack.prototype, "select", null);
     __decorate([
         $.$mol_mem
     ], $my_hack.prototype, "Control", null);
@@ -11623,6 +11606,35 @@ var $;
                 return next;
             }
             gesture_handle(gestures) {
+                if (gestures.length == 0) {
+                    console.log('wait...');
+                    return;
+                }
+                for (const pred of gestures) {
+                    const index = pred.annotations.indexFinger;
+                    const palm = pred.annotations.palmBase;
+                    const thumb = pred.annotations.thumb;
+                    const middle = pred.annotations.middleFinger;
+                    if (isUp(index) && isUp(middle)) {
+                        console.log("peace");
+                    }
+                    else if (isUp(thumb)) {
+                        console.log("thumb up");
+                        this.exit();
+                    }
+                    else if (isRight(thumb)) {
+                        console.log("thumb right");
+                        this.forward();
+                    }
+                    else if (isDown(index)) {
+                        console.log("index down");
+                        this.enter();
+                    }
+                    else if (isLeft(index)) {
+                        console.log("index left");
+                        this.backward();
+                    }
+                }
             }
             skeleton_draw() {
                 const canvas = this.Skeleton().dom_node();
@@ -11630,14 +11642,7 @@ var $;
                 canvas.height = 600;
                 const gestures = this.gestures();
                 const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, 600, 600);
-                ctx.strokeStyle = 'blue';
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(600, 600);
-                ctx.moveTo(0, 600);
-                ctx.lineTo(600, 0);
-                ctx.stroke();
+                draw_hands(ctx, gestures);
                 return null;
             }
             render() {
@@ -11651,22 +11656,21 @@ var $;
             speech_enabled(next) {
                 return $.$mol_speech.hearing(next);
             }
-            enter() {
-                const focused = $.$mol_view_selection.focused()[0];
-                focused.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-                return true;
-            }
             exit() {
                 const query = '[mol_page_head] [mol_icon_cross]';
                 const close = [...document.querySelectorAll(query)].slice(-1)[0];
-                close.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                const links = this.links();
+                const uri = document.location.href;
+                const link = links.find(link => link.href === uri);
+                console.log('back focus to', link);
+                link === null || link === void 0 ? void 0 : link.focus();
+                close === null || close === void 0 ? void 0 : close.dispatchEvent(new MouseEvent('click', { bubbles: true }));
                 return true;
             }
             go([topic]) {
                 var _a, _b;
                 topic = topic.replace(/(а|о|у|е|и|ь|)$/, '');
-                const query = 'a, button';
-                const links = [...document.querySelectorAll(query)];
+                const links = this.links();
                 console.log(JSON.stringify(topic));
                 for (const link of links) {
                     const text = (_b = (_a = link.textContent) === null || _a === void 0 ? void 0 : _a.toLowerCase()) !== null && _b !== void 0 ? _b : '';
@@ -11674,13 +11678,13 @@ var $;
                         continue;
                     console.log(link);
                     link.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                    this.autofocus();
                     return true;
                 }
             }
             forward() {
                 var _a;
-                const query = 'a, button';
-                const links = [...document.querySelectorAll(query)];
+                const links = this.links();
                 const index = links.indexOf(document.activeElement);
                 const next = (_a = links[index + 1]) !== null && _a !== void 0 ? _a : links[0];
                 console.log(next);
@@ -11689,18 +11693,32 @@ var $;
             }
             backward() {
                 var _a;
-                const query = 'a, button';
-                const links = [...document.querySelectorAll(query)];
+                const links = this.links();
                 const index = links.indexOf(document.activeElement);
                 const next = (_a = links[index - 1]) !== null && _a !== void 0 ? _a : links[links.length - 1];
                 console.log(next);
                 next.focus();
                 return true;
             }
-            select() {
+            enter() {
                 var _a;
                 (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                this.autofocus();
                 return true;
+            }
+            links() {
+                const query = 'a';
+                const links = [...document.querySelectorAll(query)];
+                return links;
+            }
+            autofocus() {
+                const prev = this.links();
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    var _a;
+                    const next = this.links();
+                    const news = next.filter(link => !prev.includes(link));
+                    (_a = news[0]) === null || _a === void 0 ? void 0 : _a.focus();
+                }));
             }
         }
         __decorate([
@@ -11713,6 +11731,129 @@ var $;
             $.$mol_mem
         ], $my_hack.prototype, "skeleton_draw", null);
         $$.$my_hack = $my_hack;
+        function draw_line(ctx, dot_1, dot_2) {
+            ctx.strokeStyle = 'blue';
+            ctx.beginPath();
+            ctx.moveTo(X(dot_1), Y(dot_1));
+            ctx.lineTo(X(dot_2), Y(dot_2));
+            ctx.stroke();
+        }
+        function draw_dot(ctx, dot) {
+            ctx.fillStyle = "red";
+            ctx.beginPath();
+            ctx.arc(X(dot), Y(dot), 3, 0, Math.PI * 2, false);
+            ctx.fill();
+        }
+        function draw_all_dot(ctx, dots) {
+            for (const dot of dots) {
+                draw_dot(ctx, dot);
+            }
+        }
+        function draw_hands(ctx, predictions) {
+            ctx.clearRect(0, 0, 600, 600);
+            ctx.lineWidth = '10';
+            for (const pred of predictions) {
+                const index = pred.annotations.indexFinger;
+                const thumb = pred.annotations.thumb;
+                const middle = pred.annotations.middleFinger;
+                const ringFinger = pred.annotations.ringFinger;
+                const pinky = pred.annotations.pinky;
+                const palm = pred.annotations.palmBase;
+                draw_all_dot(ctx, palm);
+                draw_line(ctx, palm[0], index[0]);
+                draw_line(ctx, palm[0], thumb[0]);
+                draw_line(ctx, palm[0], middle[0]);
+                draw_line(ctx, palm[0], ringFinger[0]);
+                draw_line(ctx, palm[0], pinky[0]);
+                draw_all_dot(ctx, index);
+                draw_line(ctx, index[0], index[1]);
+                draw_line(ctx, index[1], index[2]);
+                draw_line(ctx, index[2], index[3]);
+                draw_all_dot(ctx, thumb);
+                draw_line(ctx, thumb[0], thumb[1]);
+                draw_line(ctx, thumb[1], thumb[2]);
+                draw_line(ctx, thumb[2], thumb[3]);
+                draw_all_dot(ctx, middle);
+                draw_line(ctx, middle[0], middle[1]);
+                draw_line(ctx, middle[1], middle[2]);
+                draw_line(ctx, middle[2], middle[3]);
+                draw_all_dot(ctx, ringFinger);
+                draw_line(ctx, ringFinger[0], ringFinger[1]);
+                draw_line(ctx, ringFinger[1], ringFinger[2]);
+                draw_line(ctx, ringFinger[2], ringFinger[3]);
+                draw_all_dot(ctx, pinky);
+                draw_line(ctx, pinky[0], pinky[1]);
+                draw_line(ctx, pinky[1], pinky[2]);
+                draw_line(ctx, pinky[2], pinky[3]);
+            }
+        }
+        function X(coords) {
+            return coords[0];
+        }
+        function Y(coords) {
+            return coords[1];
+        }
+        function bottomX(coords) {
+            return coords[0][0];
+        }
+        function topX(coords) {
+            return coords[3][0];
+        }
+        function bottomY(coords) {
+            return coords[0][1];
+        }
+        function topY(coords) {
+            return coords[3][1];
+        }
+        var treshold = 4;
+        function isUp(finger) {
+            const d_x = topX(finger) - bottomX(finger);
+            const d_y = topY(finger) - bottomY(finger);
+            if (d_x != 0) {
+                if (Math.abs(d_y / d_x) > treshold) {
+                    if (d_y < 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        function isDown(finger) {
+            const d_x = topX(finger) - bottomX(finger);
+            const d_y = topY(finger) - bottomY(finger);
+            if (d_x != 0) {
+                if (Math.abs(d_y / d_x) > treshold) {
+                    if (d_y > 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        function isRight(finger) {
+            const d_x = topX(finger) - bottomX(finger);
+            const d_y = topY(finger) - bottomY(finger);
+            if (d_y != 0) {
+                if (Math.abs(d_x / d_y) > treshold) {
+                    if (d_x < 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        function isLeft(finger) {
+            const d_x = topX(finger) - bottomX(finger);
+            const d_y = topY(finger) - bottomY(finger);
+            if (d_y != 0) {
+                if (Math.abs(d_x / d_y) > treshold) {
+                    if (d_x > 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 //hack.view.js.map

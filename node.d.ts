@@ -4135,8 +4135,6 @@ declare namespace $ {
         backward(val?: any, force?: $mol_mem_force): any;
         Forward(): $mol_speech;
         forward(val?: any, force?: $mol_mem_force): any;
-        Select(): $mol_speech;
-        select(val?: any, force?: $mol_mem_force): any;
         sub(): readonly any[];
         Control(): $mol_view;
         Mirror(): $mol_view;
@@ -4171,12 +4169,13 @@ declare namespace $.$$ {
         render(): void;
         speech_text(): string;
         speech_enabled(next?: boolean): boolean;
-        enter(): boolean;
         exit(): boolean;
         go([topic]: [string]): true | undefined;
         forward(): boolean;
         backward(): boolean;
-        select(): boolean;
+        enter(): boolean;
+        links(): HTMLAnchorElement[];
+        autofocus(): void;
     }
 }
 
