@@ -202,7 +202,7 @@ namespace $.$$ {
 
 
 	function draw_line(ctx:any, dot_1:any, dot_2:any){
-		ctx.strokeStyle = 'blue'
+		ctx.strokeStyle = 'green'
 
 		ctx.beginPath();
 		ctx.moveTo(X(dot_1), Y(dot_1))
