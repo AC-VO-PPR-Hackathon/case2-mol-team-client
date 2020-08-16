@@ -39,9 +39,23 @@ $my_hack $piterjs_app
 							dom_name \canvas
 				<= Speech_panel $mol_list
 					rows /
-						<= Speech_hint $mol_text
-							text <= speech_hint \ **следующий** | **предыдущий** | **выбрать** | **убрать** | **открыть** *слово*
-							
+						<= Speech_hint $mol_row
+							sub /
+								<= Backward_hint $my_hack_command
+									Icon <= Backward_icon $mol_icon_hand_left
+									hint \предыдущий
+								<= Forward_hint $my_hack_command
+									Icon <= Forward_icon $mol_icon_hand_right
+									hint \следующий
+								<= Enter_hint $my_hack_command
+									Icon <= Enter_icon $mol_icon_thumb_up
+									hint \выбрать
+								<= Exit_hint $my_hack_command
+									Icon <= Exit_icon $mol_icon_hand_peace
+									hint \убрать
+								<= Go_hint $my_hack_command
+									- Icon <= Go_icon $mol_icon_hand_right
+									hint \открыть [слово]
 						<= Speech_bar $mol_view
 							sub /
 								<= Speech_toggle $mol_check_icon
@@ -53,3 +67,9 @@ $my_hack $piterjs_app
 										<= speech_text \
 		^
 
+$my_hack_command $mol_list
+	rows /
+		<= Icon $mol_icon
+		<= Hint $mol_view
+			sub /
+				<= hint \
