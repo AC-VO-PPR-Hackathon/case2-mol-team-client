@@ -155,6 +155,8 @@ namespace $.$$ {
 			console.log( next )
 			next.focus()
 
+			console.log('forward')
+
 			prev_cmd = 'forward'
 			
 			start_time = Date.now() 
@@ -172,6 +174,8 @@ namespace $.$$ {
 			console.log( next )
 			next.focus()
 
+			console.log('backward')
+
 			return true
 		}
 		
@@ -179,6 +183,8 @@ namespace $.$$ {
 
 			document.activeElement?.dispatchEvent( new MouseEvent( 'click', { bubbles: true } ) )
 			this.autofocus()
+
+			console.log('enter')
 
 			return true
 		}
