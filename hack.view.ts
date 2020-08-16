@@ -118,6 +118,10 @@ namespace $.$$ {
 			console.log( 'back focus to' , link )
 			link?.focus()
 
+			prev_cmd = 'exit'
+			
+			start_time = Date.now() 
+
 			close?.dispatchEvent( new MouseEvent( 'click', { bubbles: true } ) )
 
 			return true
@@ -174,6 +178,10 @@ namespace $.$$ {
 			console.log( next )
 			next.focus()
 
+			prev_cmd = 'backward'
+			
+			start_time = Date.now() 
+
 			console.log('backward')
 
 			return true
@@ -185,6 +193,10 @@ namespace $.$$ {
 			this.autofocus()
 
 			console.log('enter')
+
+			prev_cmd = 'enter'
+			
+			start_time = Date.now() 
 
 			return true
 		}
