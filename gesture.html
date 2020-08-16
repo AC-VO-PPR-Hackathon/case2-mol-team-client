@@ -134,8 +134,8 @@
   }
 
   function jointCtg(lowerJoint, upperJoint) {
-    dx = lowerJoint[0] - upperJoint[0]
-    dy = lowerJoint[1] > upperJoint[1]
+    const dx = lowerJoint[0] - upperJoint[0]
+    const dy = lowerJoint[1] > upperJoint[1]
     return dx / dy
   }
 
@@ -199,8 +199,8 @@
     let y = 1
     let cnt = 0
     for  (let joint = 0; joint < thumb.length-1; joint++) {
-      lowerJoint = thumb[joint]
-      upperJoint = thumb[joint+1]
+		const lowerJoint = thumb[joint]
+		const upperJoint = thumb[joint+1]
       if (lowerJoint[y] > upperJoint[y] && jointCtg(lowerJoint, upperJoint) <= 0.8) {
         cnt++
       }
@@ -210,8 +210,8 @@
   }
 
   function tan(finger) {
-    dx = topX(finger) - bottomX(finger)
-    dy = topY(finger) - bottomY(finger)
+    const dx = topX(finger) - bottomX(finger)
+    const dy = topY(finger) - bottomY(finger)
     return dy / dx
   }
 
@@ -227,8 +227,8 @@
     let y = 1
     let cnt = 0
     for  (let joint = 0; joint < finger.length-1; joint++) {
-      lowerJoint = finger[joint]
-      upperJoint = finger[joint+1]
+		const lowerJoint = finger[joint]
+		const upperJoint = finger[joint+1]
       if (lowerJoint[y] > upperJoint[y] && jointCtg(lowerJoint, upperJoint) <= 0.8) {
         cnt++
       }
@@ -300,7 +300,7 @@
       const pinky = pred.annotations.pinky
 
       if (isPalm(index, middle, ringfinger, pinky) && isLeftHand(index, palm, thumb) && check_cmd(prev_cmd, 'backward')) {gestures.backward()}
-      	else if (isUp(index) && isUp(middle) && !isSpread(ringfinger) && !isSpread(pinky) && check_cmd(prev_cmd, 'exit')){gestures.exit()}
+      	else if (isRightHand(index, palm, thumb) && isUp(index) && isUp(middle) && !isSpread(ringfinger) && !isSpread(pinky) && check_cmd(prev_cmd, 'exit')){gestures.exit()}
 			else if (isThumbUp(thumb, index, middle, ringfinger, pinky) && check_cmd(prev_cmd, 'enter')) {gestures.enter()}
 				else if (isPalm(index, middle, ringfinger, pinky) && isRightHand(index, palm, thumb) && check_cmd(prev_cmd, 'forward')) {gestures.forward()}
 
