@@ -300,7 +300,7 @@
       const pinky = pred.annotations.pinky
 
       if (isPalm(index, middle, ringfinger, pinky) && isLeftHand(index, palm, thumb) && check_cmd(prev_cmd, 'backward')) {gestures.backward()}
-      	else if (isUp(index) && isUp(middle) && !isSpread(ringfinger) && !isSpread(pinky) && check_cmd(prev_cmd, 'exit')){gestures.exit()}
+      	else if (isRightHand(index, palm, thumb) && isUp(index) && isUp(middle) && !isSpread(ringfinger) && !isSpread(pinky) && check_cmd(prev_cmd, 'exit')){gestures.exit()}
 			else if (isThumbUp(thumb, index, middle, ringfinger, pinky) && check_cmd(prev_cmd, 'enter')) {gestures.enter()}
 				else if (isPalm(index, middle, ringfinger, pinky) && isRightHand(index, palm, thumb) && check_cmd(prev_cmd, 'forward')) {gestures.forward()}
 
