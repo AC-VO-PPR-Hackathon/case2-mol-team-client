@@ -11909,6 +11909,7 @@ var $;
                 const next = (_a = links[index + 1]) !== null && _a !== void 0 ? _a : links[0];
                 console.log(next);
                 next.focus();
+                console.log('forward');
                 prev_cmd = 'forward';
                 start_time = Date.now();
                 return true;
@@ -11920,12 +11921,14 @@ var $;
                 const next = (_a = links[index - 1]) !== null && _a !== void 0 ? _a : links[links.length - 1];
                 console.log(next);
                 next.focus();
+                console.log('backward');
                 return true;
             }
             enter() {
                 var _a;
                 (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.dispatchEvent(new MouseEvent('click', { bubbles: true }));
                 this.autofocus();
+                console.log('enter');
                 return true;
             }
             links() {
