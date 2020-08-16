@@ -53,7 +53,7 @@ namespace $.$$ {
 				return
 			}
 	
-			for (pred of gestures) {
+			for (const pred of gestures) {
 	
 				const palm = pred.annotations.palmBase
 				const index = pred.annotations.indexFinger
@@ -354,7 +354,13 @@ namespace $.$$ {
 		return false
 	}
 
-	function isThumbUp(thumb, finger1, finger2, finger3, finger4) {
+	function jointCtg(lowerJoint:any, upperJoint:any) {
+		const dx = lowerJoint[0] - upperJoint[0]
+		const dy = lowerJoint[1] - upperJoint[1]
+		return dx / dy
+	  }
+
+	function isThumbUp(thumb:any[], finger1:any[], finger2:any[], finger3:any[], finger4:any[]) {
 		let x = 0
 		let y = 1
 		let cnt = 0
@@ -369,20 +375,20 @@ namespace $.$$ {
 		return false
 	  }
 	
-	  function tan(finger) {
+	  function tan(finger:any[]) {
 		const dx = topX(finger) - bottomX(finger)
 		const dy = topY(finger) - bottomY(finger)
 		return dy / dx
 	  }
 	
-	  function areParallel(finger1, finger2) {
+	  function areParallel(finger1:any[], finger2:any[]) {
 		if (Math.abs(tan(finger1) - tan(finger2)) < 0.4) {
 		  return true
 		}
 		return false
 	  }
 	
-	  function isSpread(finger) {
+	  function isSpread(finger:any[]) {
 		let x = 0
 		let y = 1
 		let cnt = 0
@@ -399,7 +405,7 @@ namespace $.$$ {
 		return false
 	  }
 	
-	  function isPalm(finger1, finger2, finger3, finger4) {
+	  function isPalm(finger1:any[], finger2:any[], finger3:any[], finger4:any[]) {
 		if (isUp(finger1) && isUp(finger2) && isUp(finger3) && isUp(finger4)) {
 		  // && areParallel(finger1, finger2) && areParallel(finger2, finger3) && areParallel(finger3, finger4)
 		  return true
@@ -407,17 +413,17 @@ namespace $.$$ {
 		return false
 	  }
 	
-	  function isPeace(thumb, index, middle, ringfinger, pinky) {
+	  function isPeace(thumb:any[], index:any[], middle:any[], ringfinger:any[], pinky:any[]) {
 		if (isSpread(index) && isSpread(middle) && !isUp(thumb)) {
 		  return true
 		}
 		return false
 	  }
 
-	  let prev_cmd = 'start'
+	let prev_cmd = 'start'
 	let start_time = 0
 
-	function check_cmd(prev_cmd, current_cmd){
+	function check_cmd(prev_cmd:any, current_cmd:any){
 		if (prev_cmd != current_cmd){
 			return true
 		}
@@ -427,11 +433,11 @@ namespace $.$$ {
 		return false
 	}
 
-	function isRightHand(index, palm, thumb){
+	function isRightHand(index:any[], palm:any[], thumb:any[]){
 		return X(index[0]) > X(palm[0]) && Y(thumb[0]) < Y(palm[0])
 	}
 
-	function isLeftHand(index, palm, thumb){
+	function isLeftHand(index:any[], palm:any[], thumb:any[]){
 		return X(index[0]) < X(palm[0]) && Y(thumb[0]) < Y(palm[0])
 	}
 
