@@ -11877,6 +11877,8 @@ var $;
                 const link = links.find(link => link.href === uri);
                 console.log('back focus to', link);
                 link === null || link === void 0 ? void 0 : link.focus();
+                prev_cmd = 'exit';
+                start_time = Date.now();
                 close === null || close === void 0 ? void 0 : close.dispatchEvent(new MouseEvent('click', { bubbles: true }));
                 return true;
             }
@@ -11914,6 +11916,8 @@ var $;
                 const next = (_a = links[index - 1]) !== null && _a !== void 0 ? _a : links[links.length - 1];
                 console.log(next);
                 next.focus();
+                prev_cmd = 'backward';
+                start_time = Date.now();
                 console.log('backward');
                 return true;
             }
@@ -11922,6 +11926,8 @@ var $;
                 (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.dispatchEvent(new MouseEvent('click', { bubbles: true }));
                 this.autofocus();
                 console.log('enter');
+                prev_cmd = 'enter';
+                start_time = Date.now();
                 return true;
             }
             links() {
