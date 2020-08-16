@@ -11788,28 +11788,23 @@ var $;
                     return;
                 }
                 for (const pred of gestures) {
-                    const index = pred.annotations.indexFinger;
                     const palm = pred.annotations.palmBase;
+                    const index = pred.annotations.indexFinger;
                     const thumb = pred.annotations.thumb;
                     const middle = pred.annotations.middleFinger;
-                    if (isUp(index) && isUp(middle)) {
-                        console.log("peace");
+                    const ringfinger = pred.annotations.ringFinger;
+                    const pinky = pred.annotations.pinky;
+                    if (isPalm(index, middle, ringfinger, pinky) && isLeftHand(index, palm, thumb) && check_cmd(prev_cmd, 'backward')) {
+                        this.backward();
                     }
-                    else if (isUp(thumb)) {
-                        console.log("thumb up");
+                    else if (isRightHand(index, palm, thumb) && isUp(index) && isUp(middle) && !isSpread(ringfinger) && !isSpread(pinky) && check_cmd(prev_cmd, 'exit')) {
                         this.exit();
                     }
-                    else if (isRight(thumb)) {
-                        console.log("thumb right");
-                        this.forward();
-                    }
-                    else if (isDown(index)) {
-                        console.log("index down");
+                    else if (isThumbUp(thumb, index, middle, ringfinger, pinky) && check_cmd(prev_cmd, 'enter')) {
                         this.enter();
                     }
-                    else if (isLeft(index)) {
-                        console.log("index left");
-                        this.backward();
+                    else if (isPalm(index, middle, ringfinger, pinky) && isRightHand(index, palm, thumb) && check_cmd(prev_cmd, 'forward')) {
+                        this.forward();
                     }
                 }
             }
@@ -11866,6 +11861,8 @@ var $;
                 const next = (_a = links[index + 1]) !== null && _a !== void 0 ? _a : links[0];
                 console.log(next);
                 next.focus();
+                prev_cmd = 'forward';
+                start_time = Date.now();
                 return true;
             }
             backward() {
@@ -12030,6 +12027,83 @@ var $;
                 }
             }
             return false;
+        }
+        function jointCtg(lowerJoint, upperJoint) {
+            const dx = lowerJoint[0] - upperJoint[0];
+            const dy = lowerJoint[1] - upperJoint[1];
+            return dx / dy;
+        }
+        function isThumbUp(thumb, finger1, finger2, finger3, finger4) {
+            let x = 0;
+            let y = 1;
+            let cnt = 0;
+            for (let joint = 0; joint < thumb.length - 1; joint++) {
+                const lowerJoint = thumb[joint];
+                const upperJoint = thumb[joint + 1];
+                if (lowerJoint[y] > upperJoint[y] && jointCtg(lowerJoint, upperJoint) <= 0.8) {
+                    cnt++;
+                }
+            }
+            if ((cnt == 3) && !isUp(finger1) && !isUp(finger2) && !isUp(finger3) && !isUp(finger4)) {
+                return true;
+            }
+            return false;
+        }
+        function tan(finger) {
+            const dx = topX(finger) - bottomX(finger);
+            const dy = topY(finger) - bottomY(finger);
+            return dy / dx;
+        }
+        function areParallel(finger1, finger2) {
+            if (Math.abs(tan(finger1) - tan(finger2)) < 0.4) {
+                return true;
+            }
+            return false;
+        }
+        function isSpread(finger) {
+            let x = 0;
+            let y = 1;
+            let cnt = 0;
+            for (let joint = 0; joint < finger.length - 1; joint++) {
+                const lowerJoint = finger[joint];
+                const upperJoint = finger[joint + 1];
+                if (lowerJoint[y] > upperJoint[y] && jointCtg(lowerJoint, upperJoint) <= 0.8) {
+                    cnt++;
+                }
+            }
+            if (cnt == 3) {
+                return true;
+            }
+            return false;
+        }
+        function isPalm(finger1, finger2, finger3, finger4) {
+            if (isUp(finger1) && isUp(finger2) && isUp(finger3) && isUp(finger4)) {
+                return true;
+            }
+            return false;
+        }
+        function isPeace(thumb, index, middle, ringfinger, pinky) {
+            if (isSpread(index) && isSpread(middle) && !isUp(thumb)) {
+                return true;
+            }
+            return false;
+        }
+        let prev_cmd = 'start';
+        let start_time = 0;
+        function check_cmd(prev_cmd, current_cmd) {
+            if (prev_cmd != current_cmd) {
+                return true;
+            }
+            if (prev_cmd == current_cmd && (Date.now() - start_time) > 1000) {
+                return true;
+            }
+            return false;
+        }
+        function isRightHand(index, palm, thumb) {
+            return X(index[0]) > X(palm[0]) && Y(thumb[0]) < Y(palm[0]);
+        }
+        function isLeftHand(index, palm, thumb) {
+            return X(index[0]) < X(palm[0]) && Y(thumb[0]) < Y(palm[0]);
         }
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
