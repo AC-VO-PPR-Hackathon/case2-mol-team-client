@@ -293,7 +293,7 @@
 
       if (isPalm(index, middle, ringfinger, pinky) && check_cmd(prev_cmd, 'backward')) {gestures.backward()}
       else if (isUp(index) && isUp(middle) && !newIsUp(ringfinger) && !newIsUp(pinky) && check_cmd(prev_cmd, 'search')){gestures.search()}
-			else if (isThumbUp(thumb, index, middle, ringfinger, pinky) && isUp(thumb) && check_cmd(prev_cmd, 'exit')) {gestures.exit()}
+			else if (isThumbUp(thumb, index, middle, ringfinger, pinky) && check_cmd(prev_cmd, 'exit')) {gestures.exit()}
 			else if (isRight(thumb) && check_cmd(prev_cmd, 'forward')) {gestures.forward()}
 			else if (isDown(index) && check_cmd(prev_cmd, 'enter')) {gestures.enter()}
 		}
