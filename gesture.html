@@ -222,7 +222,7 @@
     return false
   }
 
-  function newIsUp(finger) {
+  function isSpread(finger) {
     let x = 0
     let y = 1
     let cnt = 0
@@ -248,15 +248,15 @@
   }
 
   function isPeace(thumb, index, middle, ringfinger, pinky) {
-    if (newIsUp(index) && newIsUp(middle) && !isUp(thumb)) {
+    if (isSpread(index) && isSpread(middle) && !isUp(thumb)) {
       return true
     }
     return false
   }
 
 	const gestures = {
-		forward() { console.log('backward'); prev_cmd = 'forward'; start_time = Date.now() },
-		backward() { console.log('forward'); prev_cmd = 'backward'; start_time = Date.now() },
+		forward() { console.log('forward'); prev_cmd = 'forward'; start_time = Date.now() },
+		backward() { console.log('backward'); prev_cmd = 'backward'; start_time = Date.now() },
 		enter() { console.log('enter'); prev_cmd = 'enter'; start_time = Date.now() },
 		exit() { console.log('exit'); prev_cmd = 'exit'; start_time = Date.now() },
 		search() { console.log('search'); prev_cmd = 'search'; start_time = Date.now() },
@@ -269,10 +269,18 @@
 		if (prev_cmd != current_cmd){
 			return true
 		}
-		if (prev_cmd == current_cmd && (Date.now() - start_time) > 1){
+		if (prev_cmd == current_cmd && (Date.now() - start_time) > 1000){
 			return true
 		}
 		return false
+	}
+
+	function isRightHand(index, palm, thumb){
+		return X(index[0]) > X(palm[0]) && Y(thumb[0]) < Y(palm[0])
+	}
+
+	function isLeftHand(index, palm, thumb){
+		return X(index[0]) < X(palm[0]) && Y(thumb[0]) < Y(palm[0])
 	}
 
 	async function handleGesures(predictions) {
@@ -286,16 +294,17 @@
 
       const palm = pred.annotations.palmBase
       const index = pred.annotations.indexFinger
-			const thumb = pred.annotations.thumb
+      const thumb = pred.annotations.thumb
       const middle = pred.annotations.middleFinger
       const ringfinger = pred.annotations.ringFinger
       const pinky = pred.annotations.pinky
 
-      if (isPalm(index, middle, ringfinger, pinky) && check_cmd(prev_cmd, 'backward')) {gestures.backward()}
-      else if (isUp(index) && isUp(middle) && !newIsUp(ringfinger) && !newIsUp(pinky) && check_cmd(prev_cmd, 'search')){gestures.search()}
-			else if (isThumbUp(thumb, index, middle, ringfinger, pinky) && check_cmd(prev_cmd, 'exit')) {gestures.exit()}
-			else if (isRight(thumb) && check_cmd(prev_cmd, 'forward')) {gestures.forward()}
-			else if (isDown(index) && check_cmd(prev_cmd, 'enter')) {gestures.enter()}
+      if (isPalm(index, middle, ringfinger, pinky) && isLeftHand(index, palm, thumb) && check_cmd(prev_cmd, 'backward')) {gestures.backward()}
+      	else if (isUp(index) && isUp(middle) && !isSpread(ringfinger) && !isSpread(pinky) && check_cmd(prev_cmd, 'exit')){gestures.exit()}
+			else if (isThumbUp(thumb, index, middle, ringfinger, pinky) && check_cmd(prev_cmd, 'enter')) {gestures.enter()}
+				else if (isPalm(index, middle, ringfinger, pinky) && isRightHand(index, palm, thumb) && check_cmd(prev_cmd, 'forward')) {gestures.forward()}
+
+
 		}
 }
 
