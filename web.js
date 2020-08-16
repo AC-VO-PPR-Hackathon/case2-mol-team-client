@@ -2620,6 +2620,168 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_svg extends $.$mol_view {
+        dom_name() {
+            return "svg";
+        }
+        dom_name_space() {
+            return "http://www.w3.org/2000/svg";
+        }
+        font_size() {
+            return 16;
+        }
+        font_family() {
+            return "";
+        }
+    }
+    $.$mol_svg = $mol_svg;
+})($ || ($ = {}));
+//svg.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_state_time extends $.$mol_object {
+        static now(precision = 0, next) {
+            if (precision > 0) {
+                new $.$mol_after_timeout(precision, $.$mol_atom2.current.fresh);
+            }
+            else {
+                new $.$mol_after_frame($.$mol_atom2.current.fresh);
+            }
+            return Date.now();
+        }
+    }
+    __decorate([
+        $.$mol_mem_key
+    ], $mol_state_time, "now", null);
+    $.$mol_state_time = $mol_state_time;
+})($ || ($ = {}));
+//time.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_svg extends $.$mol_svg {
+            computed_style() {
+                const win = this.$.$mol_dom_context;
+                const style = win.getComputedStyle(this.dom_node());
+                if (!style['font-size'])
+                    $.$mol_state_time.now();
+                return style;
+            }
+            font_size() {
+                return parseInt(this.computed_style()['font-size']) || 16;
+            }
+            font_family() {
+                return this.computed_style()['font-family'];
+            }
+        }
+        __decorate([
+            $.$mol_mem
+        ], $mol_svg.prototype, "computed_style", null);
+        __decorate([
+            $.$mol_mem
+        ], $mol_svg.prototype, "font_size", null);
+        __decorate([
+            $.$mol_mem
+        ], $mol_svg.prototype, "font_family", null);
+        $$.$mol_svg = $mol_svg;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//svg.view.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_svg_root extends $.$mol_svg {
+        dom_name() {
+            return "svg";
+        }
+        attr() {
+            return (Object.assign(Object.assign({}, super.attr()), { "viewBox": this.view_box(), "preserveAspectRatio": this.aspect() }));
+        }
+        view_box() {
+            return "0 0 100 100";
+        }
+        aspect() {
+            return "xMidYMid";
+        }
+    }
+    $.$mol_svg_root = $mol_svg_root;
+})($ || ($ = {}));
+//root.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_style_attach("mol/svg/root/root.view.css", "[mol_svg_root] {\n\toverflow: hidden;\n}\n");
+})($ || ($ = {}));
+//root.view.css.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_svg_path extends $.$mol_svg {
+        dom_name() {
+            return "path";
+        }
+        attr() {
+            return (Object.assign(Object.assign({}, super.attr()), { "d": this.geometry() }));
+        }
+        geometry() {
+            return "";
+        }
+    }
+    $.$mol_svg_path = $mol_svg_path;
+})($ || ($ = {}));
+//path.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon extends $.$mol_svg_root {
+        view_box() {
+            return "0 0 24 24";
+        }
+        minimal_width() {
+            return 16;
+        }
+        minimal_height() {
+            return 16;
+        }
+        sub() {
+            return [this.Path()];
+        }
+        Path() {
+            return ((obj) => {
+                obj.geometry = () => this.path();
+                return obj;
+            })(new this.$.$mol_svg_path());
+        }
+        path() {
+            return "";
+        }
+    }
+    __decorate([
+        $.$mol_mem
+    ], $mol_icon.prototype, "Path", null);
+    $.$mol_icon = $mol_icon;
+})($ || ($ = {}));
+//icon.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_style_attach("mol/icon/icon.view.css", "[mol_icon] {\n\tfill: currentColor;\n\tstroke: none;\n\twidth: 1em;\n\theight: 1em;\n\tflex: 0 0 auto;\n\tvertical-align: top;\n\twill-change: transform;\n\tmargin: .25em 0;\n\tdisplay: inline-block;\n}\n");
+})($ || ($ = {}));
+//icon.view.css.js.map
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_plugin extends $.$mol_view {
         dom_node(next) {
             const node = next || $.$mol_owning_get(this, $.$mol_view).dom_node();
@@ -4324,128 +4486,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_svg extends $.$mol_view {
-        dom_name() {
-            return "svg";
-        }
-        dom_name_space() {
-            return "http://www.w3.org/2000/svg";
-        }
-        font_size() {
-            return 16;
-        }
-        font_family() {
-            return "";
-        }
-    }
-    $.$mol_svg = $mol_svg;
-})($ || ($ = {}));
-//svg.view.tree.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_state_time extends $.$mol_object {
-        static now(precision = 0, next) {
-            if (precision > 0) {
-                new $.$mol_after_timeout(precision, $.$mol_atom2.current.fresh);
-            }
-            else {
-                new $.$mol_after_frame($.$mol_atom2.current.fresh);
-            }
-            return Date.now();
-        }
-    }
-    __decorate([
-        $.$mol_mem_key
-    ], $mol_state_time, "now", null);
-    $.$mol_state_time = $mol_state_time;
-})($ || ($ = {}));
-//time.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_svg extends $.$mol_svg {
-            computed_style() {
-                const win = this.$.$mol_dom_context;
-                const style = win.getComputedStyle(this.dom_node());
-                if (!style['font-size'])
-                    $.$mol_state_time.now();
-                return style;
-            }
-            font_size() {
-                return parseInt(this.computed_style()['font-size']) || 16;
-            }
-            font_family() {
-                return this.computed_style()['font-family'];
-            }
-        }
-        __decorate([
-            $.$mol_mem
-        ], $mol_svg.prototype, "computed_style", null);
-        __decorate([
-            $.$mol_mem
-        ], $mol_svg.prototype, "font_size", null);
-        __decorate([
-            $.$mol_mem
-        ], $mol_svg.prototype, "font_family", null);
-        $$.$mol_svg = $mol_svg;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-//svg.view.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_svg_root extends $.$mol_svg {
-        dom_name() {
-            return "svg";
-        }
-        attr() {
-            return (Object.assign(Object.assign({}, super.attr()), { "viewBox": this.view_box(), "preserveAspectRatio": this.aspect() }));
-        }
-        view_box() {
-            return "0 0 100 100";
-        }
-        aspect() {
-            return "xMidYMid";
-        }
-    }
-    $.$mol_svg_root = $mol_svg_root;
-})($ || ($ = {}));
-//root.view.tree.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_style_attach("mol/svg/root/root.view.css", "[mol_svg_root] {\n\toverflow: hidden;\n}\n");
-})($ || ($ = {}));
-//root.view.css.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_svg_path extends $.$mol_svg {
-        dom_name() {
-            return "path";
-        }
-        attr() {
-            return (Object.assign(Object.assign({}, super.attr()), { "d": this.geometry() }));
-        }
-        geometry() {
-            return "";
-        }
-    }
-    $.$mol_svg_path = $mol_svg_path;
-})($ || ($ = {}));
-//path.view.tree.js.map
-;
-"use strict";
-var $;
-(function ($) {
     class $piterjs_screen_lines extends $.$mol_svg_root {
         style() {
             return ({
@@ -5773,46 +5813,6 @@ var $;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 //link.view.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_icon extends $.$mol_svg_root {
-        view_box() {
-            return "0 0 24 24";
-        }
-        minimal_width() {
-            return 16;
-        }
-        minimal_height() {
-            return 16;
-        }
-        sub() {
-            return [this.Path()];
-        }
-        Path() {
-            return ((obj) => {
-                obj.geometry = () => this.path();
-                return obj;
-            })(new this.$.$mol_svg_path());
-        }
-        path() {
-            return "";
-        }
-    }
-    __decorate([
-        $.$mol_mem
-    ], $mol_icon.prototype, "Path", null);
-    $.$mol_icon = $mol_icon;
-})($ || ($ = {}));
-//icon.view.tree.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_style_attach("mol/icon/icon.view.css", "[mol_icon] {\n\tfill: currentColor;\n\tstroke: none;\n\twidth: 1em;\n\theight: 1em;\n\tflex: 0 0 auto;\n\tvertical-align: top;\n\twill-change: transform;\n\tmargin: .25em 0;\n\tdisplay: inline-block;\n}\n");
-})($ || ($ = {}));
-//icon.view.css.js.map
 ;
 "use strict";
 var $;
@@ -11285,6 +11285,66 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_icon_hand extends $.$mol_icon {
+        path() {
+            return "M6.58,19H14.58V22H6.58V19M19.74,11.6C19.55,11.4 19.29,11.28 19,11.28L18.78,11.31L15.58,13V11.83L16.09,2.9C16.12,2.35 15.7,1.87 15.15,1.84C14.6,1.81 14.12,2.23 14.09,2.78L13.82,7.47H13.58L12.54,7.58V2C12.54,1.45 12.09,1 11.54,1C11,1 10.54,1.45 10.54,2V8.41L9.72,8.78L9.03,3.32C8.96,2.77 8.46,2.38 7.91,2.45C7.36,2.5 6.97,3 7.04,3.57L7.81,9.63L7.43,9.8C7.3,9.85 7.18,9.93 7.07,10L5.97,6.11C5.81,5.54 5.25,5.2 4.71,5.34C4.18,5.5 3.88,6.08 4.04,6.65L6.61,15.77C6.61,15.8 6.63,15.84 6.64,15.87L6.67,16H6.68C6.9,16.57 7.47,17 8.08,17H14.58C14.97,17 15.32,16.84 15.58,16.57L20.5,12.37L19.74,11.6Z";
+        }
+    }
+    $.$mol_icon_hand = $mol_icon_hand;
+})($ || ($ = {}));
+//hand.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_hand_left extends $.$mol_icon {
+        path() {
+            return "M3,6.58V18.67C3,20.5 4.5,22 6.33,22H12.42C13.32,22 14.17,21.64 14.79,21L21.33,14.36C21.33,14.36 20.28,13.33 20.25,13.32C20.07,13.16 19.84,13.07 19.59,13.07C19.41,13.07 19.24,13.12 19.09,13.21C19.06,13.22 15.5,15.26 15.5,15.26V5.33C15.5,4.64 14.94,4.08 14.25,4.08C13.56,4.08 13,4.64 13,5.33V11.17H12.17V3.25C12.17,2.56 11.61,2 10.92,2C10.23,2 9.67,2.56 9.67,3.25V11.17H8.83V4.08C8.83,3.39 8.27,2.83 7.58,2.83C6.89,2.83 6.33,3.39 6.33,4.08V11.17H5.5V6.58C5.5,5.89 4.94,5.33 4.25,5.33C3.56,5.33 3,5.89 3,6.58Z";
+        }
+    }
+    $.$mol_icon_hand_left = $mol_icon_hand_left;
+})($ || ($ = {}));
+//left.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_hand_right extends $.$mol_icon {
+        path() {
+            return "M21,6.58V18.67C21,20.51 19.51,22 17.67,22H11.58C10.68,22 9.83,21.64 9.21,21L2.67,14.36C2.67,14.36 3.72,13.33 3.75,13.32C3.93,13.16 4.16,13.07 4.41,13.07C4.59,13.07 4.76,13.12 4.91,13.21C4.94,13.22 8.5,15.26 8.5,15.26V5.33C8.5,4.64 9.06,4.08 9.75,4.08C10.44,4.08 11,4.64 11,5.33V11.17H11.83V3.25C11.83,2.56 12.39,2 13.08,2C13.78,2 14.33,2.56 14.33,3.25V11.17H15.17V4.08C15.17,3.39 15.72,2.83 16.42,2.83C17.11,2.83 17.67,3.39 17.67,4.08V11.17H18.5V6.58C18.5,5.89 19.06,5.33 19.75,5.33C20.44,5.33 21,5.89 21,6.58Z";
+        }
+    }
+    $.$mol_icon_hand_right = $mol_icon_hand_right;
+})($ || ($ = {}));
+//right.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_thumb_up extends $.$mol_icon {
+        path() {
+            return "M23,10C23,8.89 22.1,8 21,8H14.68L15.64,3.43C15.66,3.33 15.67,3.22 15.67,3.11C15.67,2.7 15.5,2.32 15.23,2.05L14.17,1L7.59,7.58C7.22,7.95 7,8.45 7,9V19C7,20.1 7.9,21 9,21H18C18.83,21 19.54,20.5 19.84,19.78L22.86,12.73C22.95,12.5 23,12.26 23,12V10M1,21H5V9H1V21Z";
+        }
+    }
+    $.$mol_icon_thumb_up = $mol_icon_thumb_up;
+})($ || ($ = {}));
+//up.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_hand_peace extends $.$mol_icon {
+        path() {
+            return "M7,19H15V22H7V19M16.15,12V12L12.97,10.34C12.82,10.34 12.69,10.4 12.6,10.5L12.3,10.81L12.89,13.23L11.91,13.47L10.72,8.5L9.25,9.18L10.29,13.47L9.32,13.7L8.32,9.59L7.85,9.8C7.35,10 7,10.53 7,11.14V15.5C7,16.3 7.73,17 8.5,17H15C15.39,17 15.74,16.84 16,16.57L16.5,16.16C16.5,16.16 17,15.78 17,15.36V13.7C17,13.7 17,12.56 16.15,12M16.94,1C16.4,0.91 15.87,1.25 15.76,1.8L14.69,7.97C14.47,7.94 14.38,7.86 14.08,7.83L13.65,7.88L12.41,1.8C12.3,1.26 11.78,0.91 11.24,1C10.69,1.13 10.34,1.66 10.45,2.2L11.65,8.11V8.11L12,9.67C12.28,9.47 12.61,9.34 12.97,9.34H13.31L16.31,10.95L17.72,2.2C17.83,1.66 17.5,1.13 16.94,1Z";
+        }
+    }
+    $.$mol_icon_hand_peace = $mol_icon_hand_peace;
+})($ || ($ = {}));
+//peace.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_check_icon extends $.$mol_check {
     }
     $.$mol_check_icon = $mol_check_icon;
@@ -11419,12 +11479,63 @@ var $;
         }
         Speech_hint() {
             return ((obj) => {
-                obj.text = () => this.speech_hint();
+                obj.sub = () => [this.Backward_hint(), this.Forward_hint(), this.Enter_hint(), this.Exit_hint(), this.Go_hint()];
                 return obj;
-            })(new this.$.$mol_text());
+            })(new this.$.$mol_row());
         }
-        speech_hint() {
-            return " **следующий** | **предыдущий** | **выбрать** | **убрать** | **открыть** *слово*";
+        Backward_hint() {
+            return ((obj) => {
+                obj.Icon = () => this.Backward_icon();
+                obj.hint = () => "предыдущий";
+                return obj;
+            })(new this.$.$my_hack_command());
+        }
+        Backward_icon() {
+            return ((obj) => {
+                return obj;
+            })(new this.$.$mol_icon_hand_left());
+        }
+        Forward_hint() {
+            return ((obj) => {
+                obj.Icon = () => this.Forward_icon();
+                obj.hint = () => "следующий";
+                return obj;
+            })(new this.$.$my_hack_command());
+        }
+        Forward_icon() {
+            return ((obj) => {
+                return obj;
+            })(new this.$.$mol_icon_hand_right());
+        }
+        Enter_hint() {
+            return ((obj) => {
+                obj.Icon = () => this.Enter_icon();
+                obj.hint = () => "выбрать";
+                return obj;
+            })(new this.$.$my_hack_command());
+        }
+        Enter_icon() {
+            return ((obj) => {
+                return obj;
+            })(new this.$.$mol_icon_thumb_up());
+        }
+        Exit_hint() {
+            return ((obj) => {
+                obj.Icon = () => this.Exit_icon();
+                obj.hint = () => "убрать";
+                return obj;
+            })(new this.$.$my_hack_command());
+        }
+        Exit_icon() {
+            return ((obj) => {
+                return obj;
+            })(new this.$.$mol_icon_hand_peace());
+        }
+        Go_hint() {
+            return ((obj) => {
+                obj.hint = () => "открыть [слово]";
+                return obj;
+            })(new this.$.$my_hack_command());
         }
         Speech_bar() {
             return ((obj) => {
@@ -11514,6 +11625,33 @@ var $;
     ], $my_hack.prototype, "Speech_hint", null);
     __decorate([
         $.$mol_mem
+    ], $my_hack.prototype, "Backward_hint", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Backward_icon", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Forward_hint", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Forward_icon", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Enter_hint", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Enter_icon", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Exit_hint", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Exit_icon", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack.prototype, "Go_hint", null);
+    __decorate([
+        $.$mol_mem
     ], $my_hack.prototype, "Speech_bar", null);
     __decorate([
         $.$mol_mem
@@ -11528,6 +11666,34 @@ var $;
         $.$mol_mem
     ], $my_hack.prototype, "Speech_text", null);
     $.$my_hack = $my_hack;
+})($ || ($ = {}));
+(function ($) {
+    class $my_hack_command extends $.$mol_list {
+        rows() {
+            return [this.Icon(), this.Hint()];
+        }
+        Icon() {
+            return ((obj) => {
+                return obj;
+            })(new this.$.$mol_icon());
+        }
+        Hint() {
+            return ((obj) => {
+                obj.sub = () => [this.hint()];
+                return obj;
+            })(new this.$.$mol_view());
+        }
+        hint() {
+            return "";
+        }
+    }
+    __decorate([
+        $.$mol_mem
+    ], $my_hack_command.prototype, "Icon", null);
+    __decorate([
+        $.$mol_mem
+    ], $my_hack_command.prototype, "Hint", null);
+    $.$my_hack_command = $my_hack_command;
 })($ || ($ = {}));
 //hack.view.tree.js.map
 ;
@@ -11568,6 +11734,11 @@ var $;
             bottom: '0',
             width: per(100),
             height: per(100),
+        },
+    });
+    $.$mol_style_define($.$my_hack_command, {
+        $mol_icon: {
+            zoom: '2',
         },
     });
 })($ || ($ = {}));

@@ -915,6 +915,68 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $mol_svg extends $mol_view {
+        dom_name(): string;
+        dom_name_space(): string;
+        font_size(): number;
+        font_family(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_state_time extends $mol_object {
+        static now(precision?: number, next?: number): number;
+    }
+}
+
+declare namespace $.$$ {
+    class $mol_svg extends $.$mol_svg {
+        computed_style(): CSSStyleDeclaration;
+        font_size(): number;
+        font_family(): any;
+    }
+}
+
+declare namespace $ {
+    class $mol_svg_root extends $mol_svg {
+        dom_name(): string;
+        attr(): {
+            viewBox: string;
+            preserveAspectRatio: string;
+        };
+        view_box(): string;
+        aspect(): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_svg_path extends $mol_svg {
+        dom_name(): string;
+        attr(): {
+            d: string;
+        };
+        geometry(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon extends $mol_svg_root {
+        view_box(): string;
+        minimal_width(): number;
+        minimal_height(): number;
+        sub(): readonly any[];
+        Path(): $mol_svg_path;
+        path(): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     class $mol_plugin extends $mol_view {
         dom_node(next?: Element): Element;
         attr_static(): {
@@ -1352,54 +1414,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $mol_svg extends $mol_view {
-        dom_name(): string;
-        dom_name_space(): string;
-        font_size(): number;
-        font_family(): string;
-    }
-}
-
-declare namespace $ {
-    class $mol_state_time extends $mol_object {
-        static now(precision?: number, next?: number): number;
-    }
-}
-
-declare namespace $.$$ {
-    class $mol_svg extends $.$mol_svg {
-        computed_style(): CSSStyleDeclaration;
-        font_size(): number;
-        font_family(): any;
-    }
-}
-
-declare namespace $ {
-    class $mol_svg_root extends $mol_svg {
-        dom_name(): string;
-        attr(): {
-            viewBox: string;
-            preserveAspectRatio: string;
-        };
-        view_box(): string;
-        aspect(): string;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-    class $mol_svg_path extends $mol_svg {
-        dom_name(): string;
-        attr(): {
-            d: string;
-        };
-        geometry(): string;
-    }
-}
-
-declare namespace $ {
     class $piterjs_screen_lines extends $mol_svg_root {
         style(): {
             fill: string;
@@ -1806,20 +1820,6 @@ declare namespace $.$$ {
         minimal_height(): number;
         theme(): "$mol_theme_base" | null;
     }
-}
-
-declare namespace $ {
-    class $mol_icon extends $mol_svg_root {
-        view_box(): string;
-        minimal_width(): number;
-        minimal_height(): number;
-        sub(): readonly any[];
-        Path(): $mol_svg_path;
-        path(): string;
-    }
-}
-
-declare namespace $ {
 }
 
 declare namespace $ {
@@ -4109,6 +4109,36 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $mol_icon_hand extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_hand_left extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_hand_right extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_thumb_up extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_hand_peace extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
     class $mol_check_icon extends $mol_check {
     }
 }
@@ -4143,8 +4173,16 @@ declare namespace $ {
         camera_ready(event?: any, force?: $mol_mem_force): any;
         Skeleton(): $mol_view;
         Speech_panel(): $$.$mol_list;
-        Speech_hint(): $$.$mol_text;
-        speech_hint(): string;
+        Speech_hint(): $mol_row;
+        Backward_hint(): $my_hack_command;
+        Backward_icon(): $mol_icon_hand_left;
+        Forward_hint(): $my_hack_command;
+        Forward_icon(): $mol_icon_hand_right;
+        Enter_hint(): $my_hack_command;
+        Enter_icon(): $mol_icon_thumb_up;
+        Exit_hint(): $my_hack_command;
+        Exit_icon(): $mol_icon_hand_peace;
+        Go_hint(): $my_hack_command;
         Speech_bar(): $mol_view;
         Speech_toggle(): $mol_check_icon;
         Speech_toggle_icon(): $mol_icon_microphone;
@@ -4152,6 +4190,14 @@ declare namespace $ {
         speech_toggle_hint(): string;
         Speech_text(): $mol_view;
         speech_text(): string;
+    }
+}
+declare namespace $ {
+    class $my_hack_command extends $mol_list {
+        rows(): readonly any[];
+        Icon(): $mol_icon;
+        Hint(): $mol_view;
+        hint(): string;
     }
 }
 
