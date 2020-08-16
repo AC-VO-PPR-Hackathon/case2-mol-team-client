@@ -44,4 +44,12 @@ namespace $ {
 
 	} )
 
+	$mol_style_define( $my_hack_command , {
+		
+		$mol_icon: {
+			zoom: '2',
+		},
+
+	} )
+
 }
